@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from .models import User
+from auth.models import User
 
 from .base_config import (
     auth_backend,

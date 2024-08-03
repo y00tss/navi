@@ -1,4 +1,5 @@
 from datetime import datetime
+from database import metadata
 
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy import (
@@ -10,8 +11,6 @@ from sqlalchemy import (
 )
 
 from database import Base
-
-metadata = MetaData()
 
 role = Table(
     "role",

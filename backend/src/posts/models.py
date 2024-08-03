@@ -1,4 +1,5 @@
 from datetime import datetime
+from database import metadata
 
 from sqlalchemy import (
     Table, Column,
@@ -8,8 +9,6 @@ from sqlalchemy import (
 )
 
 from auth.models import User
-
-metadata = MetaData()
 
 Post = Table(
     'post',

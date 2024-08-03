@@ -1,4 +1,5 @@
 from datetime import datetime
+from database import metadata
 
 from sqlalchemy import (
     Table, Column,
@@ -9,8 +10,6 @@ from sqlalchemy import (
 
 from auth.models import User
 from posts.models import Post
-
-metadata = MetaData()
 
 
 Comment = Table(
