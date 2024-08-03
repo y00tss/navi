@@ -34,7 +34,7 @@ async def get_all_comments(
     Get all comments
     """
     try:
-        posts = await session.execute(select(Comment))
+        posts = await session.execute(select(Comment).order_by(Comment.c.id))
         return posts.mappings().all()
     except Exception as e:
         logger.error(f"Error getting all comments: {e}")
@@ -52,7 +52,7 @@ async def get_all_friendly_comments(
     try:
         posts = await session.execute(select(Comment).where(
             Comment.c.friendly
-        ))
+        ).order_by(Comment.c.id))
         return posts.mappings().all()
     except Exception as e:
         logger.error(f"Error getting all comments: {e}")
@@ -68,7 +68,9 @@ async def get_user_comments(
     Get comments created by the user
     """
     try:
-        posts = await session.execute(select(Comment).where(Post.c.user_id == user.id))
+        posts = await session.execute(select(Comment).where(
+            Comment.c.user_id == user.id
+        ).order_by(Comment.c.id))
         return posts.mappings().all()
     except Exception as e:
         return {"status": 500, "description": f"{e}"}
@@ -87,7 +89,7 @@ async def get_user_friendly_comments(
             Post.c.user_id == user.id
         ).where(
             Comment.c.friendly
-        ))
+        ).order_by(Comment.c.id))
         return posts.mappings().all()
     except Exception as e:
         return {"status": 500, "description": f"{e}"}
@@ -107,7 +109,7 @@ async def get_post_comments(
             Post.c.id == post_id
         ).where(
             Comment.c.friendly
-        ))
+        ).order_by(Comment.c.id))
         return post.mappings().all()
     except Exception as e:
         logger.error(f"Error getting post by id: {e}")
@@ -126,6 +128,7 @@ async def create_comment(
     try:
         ai = OpenAI()
         result = await ai.check_text(text=request.content)
+        logger.info(f"Creating comment for user_id: {user.id}")
         comment = await session.execute(insert(Comment).values(
             content=request.content,
             user_id=user.id,

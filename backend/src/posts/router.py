@@ -27,7 +27,7 @@ async def get_all_posts(
     Get all posts
     """
     try:
-        posts = await session.execute(select(Post))
+        posts = await session.execute(select(Post).order_by(Post.c.id))
 
         return posts.mappings().all()
     except Exception as e:
@@ -46,7 +46,7 @@ async def get_all_friendly_posts(
     try:
         posts = await session.execute(select(Post).where(
             Post.c.friendly
-        ))
+        ).order_by(Post.c.id))
 
         return posts.mappings().all()
     except Exception as e:
@@ -63,7 +63,9 @@ async def get_posts_by_user(
     Get post by user
     """
     try:
-        posts = await session.execute(select(Post).where(Post.c.user_id == user.id))
+        posts = await session.execute(select(Post).where(
+            Post.c.user_id == user.id
+        ).order_by(Post.c.id))
         return posts.mappings().all()
     except Exception as e:
         logger.error(f"Error getting posts by user: {e}")
@@ -83,7 +85,7 @@ async def get_friendly_posts_by_user(
             Post.c.user_id == user.id
         ).where(
             Post.c.friendly
-        ))
+        ).order_by(Post.c.id))
         return posts.mappings().all()
     except Exception as e:
         logger.error(f"Error getting posts by user: {e}")
@@ -100,7 +102,9 @@ async def get_post_by_id(
     Get post by id
     """
     try:
-        post = await session.execute(select(Post).where(Post.c.id == post_id))
+        post = await session.execute(select(Post).where(
+            Post.c.id == post_id
+        ).order_by(Post.c.id))
         return post.mappings().all()[0]
     except Exception as e:
         logger.error(f"Error getting post by id: {e}")
