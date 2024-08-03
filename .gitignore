@@ -1,0 +1,8 @@
+backend/src/.env
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+/venv/
