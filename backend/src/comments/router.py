@@ -170,7 +170,7 @@ async def create_comment(
         return {"status": 500, "description": f"{e}"}
 
 
-@router.post("/reply", status_code=201)  # TODO: check relationship
+@router.post("/reply", status_code=201)
 async def reply_comment(
         request: CommentReplyRequest,
         user: User = Depends(current_user),
@@ -186,13 +186,12 @@ async def reply_comment(
             Comment.c.id == request.parent_id
         ))
         parent = parent_comment.fetchone()
-        post_id = parent[0].post_id
 
         await session.execute(insert(Comment).values(
             content=request.content,
             user_id=user.id,
             parent_id=request.parent_id,
-            post_id=post_id,
+            post_id=parent.post_id,
             friendly=result
         ))
         await session.commit()
