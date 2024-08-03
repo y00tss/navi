@@ -4,10 +4,13 @@ services:
     build:
       context: ./backend/src
       dockerfile: Dockerfile
-#    restart: always
+    restart: always
     command: >
       /bin/sh -c "
-      pytest
+      alembic upgrade head &&
+      flake8 . &&
+      pytest &&
+      uvicorn main:app --host 0.0.0.0 --port 8000
       "
     ports:
       - "8001:8000"
@@ -37,19 +40,19 @@ services:
     ports:
       - "54322:5432"
 
-#  worker:
-#    build: ./backend/src
-#    command: celery -A worker.celery worker --loglevel=info
-#    volumes:
-#      - ./backend/src:/app
-#    environment:
-#      - CELERY_BROKER_URL=redis://redis:6379/0
-#      - CELERY_RESULT_BACKEND=redis://redis:6379/0
-#    depends_on:
-#      - redis
-#
-#  redis:
-#    image: redis:7
+  worker:
+    build: ./backend/src
+    command: celery -A worker.celery worker --loglevel=info
+    volumes:
+      - ./backend/src:/app
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7
 
 volumes:
     postgres_data:
