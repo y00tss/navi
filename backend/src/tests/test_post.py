@@ -1,11 +1,5 @@
 from httpx import AsyncClient
 
-from services.logger import Logger
-import logging
-
-logger = Logger(__name__, level=logging.INFO, log_to_file=True, log_dir='logger',
-                filename='tests_post.log').get_logger()
-
 
 class TestPublicUser:
 
@@ -58,8 +52,6 @@ class TestAuthenticatedUser:
             "title": "Title",
             "content": "Content Good",
         })
-        if response.status_code != 201:
-            logger.error(f"Error adding post: {response.json()}")
         assert response.status_code == 201
         response_json = response.json()
         assert response_json["description"] == "Post created successfully"
@@ -82,12 +74,10 @@ class TestAuthenticatedUser:
         })
         assert response.status_code == 200
         response_json = response.json()
-        logger.info(f'TEST {response_json}')
         assert response_json["description"] == "Post was updated but it is not friendly, change the content"  # noqa
 
     async def test_get_all_posts(self, ac: AsyncClient):
         response = await ac.get("/posts/all")
-        logger.info(f"Response: {response.json()}")
         assert response.status_code == 200
         response_json = response.json()
         assert isinstance(response_json, list)
@@ -99,8 +89,6 @@ class TestAuthenticatedUser:
     async def test_get_all_friendly_posts(self, ac: AsyncClient):
         response = await ac.get("/posts/all_friendly")
         assert response.status_code == 200
-        posts = response.json()
-        logger.info(posts)
 
     async def test_get_posts_by_user(self, ac: AsyncClient):
         response = await ac.get("/posts/user")
@@ -115,16 +103,12 @@ class TestAuthenticatedUser:
             "title": "Title",
             "content": "Content Good Super",
         })
-        if response.status_code != 201:
-            logger.error(f"Error adding post: {response.json()}")
         assert response.status_code == 201
         response_json = response.json()
-        logger.info(f'TEST {response_json}')
         assert response_json["description"] == "Post created successfully"
 
     async def test_delete_post(self, ac: AsyncClient):
         response = await ac.delete("/posts/1")
         assert response.status_code == 200
         response_json = response.json()
-        logger.info(f'TEST {response_json}')
         assert response_json["description"] == "Post deleted successfully"

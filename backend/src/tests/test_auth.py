@@ -3,12 +3,6 @@ from sqlalchemy import insert, select
 from auth.models import role
 from tests.conftest import client, async_session_maker
 
-from services.logger import Logger
-import logging
-
-logger = Logger(__name__, level=logging.INFO, log_to_file=True, log_dir='logger',
-                filename='tests.log').get_logger()
-
 
 async def test_add_role():
     """Adding a role should return a 201 status"""
@@ -35,7 +29,6 @@ def test_register_new_user():
     })
     assert response.status_code == 201
     result = response.json()
-    logger.info(f"Result AUTH: {result}")
     assert result['email'] == "test@testc.com"
     assert result['username'] == "test@testc.com"
     assert result['is_active']
