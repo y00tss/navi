@@ -7,7 +7,6 @@ from sqlalchemy import (
     Integer, String,
     TIMESTAMP, ForeignKey,
     JSON, Boolean,
-    MetaData,
 )
 
 from database import Base

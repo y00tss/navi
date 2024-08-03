@@ -5,7 +5,7 @@ from sqlalchemy import (
     Table, Column,
     Integer, String,
     TIMESTAMP, ForeignKey,
-    Boolean, MetaData,
+    Boolean,
 )
 
 from auth.models import User

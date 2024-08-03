@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from auth.base_config import current_user
 from database import get_async_session
@@ -6,6 +6,7 @@ from sqlalchemy import insert, select, update, delete
 
 from auth.models import User
 from posts.models import Post
+from posts.schemas import PostCreateRequest, PostUpdateRequest
 
 from services.openai import OpenAI
 from services.logger import Logger
@@ -17,7 +18,7 @@ logger = Logger(__name__, level=logging.INFO, log_to_file=True, log_dir='logger'
 router = APIRouter()
 
 
-@router.get("/all")
+@router.get("/all", status_code=200)
 async def get_all_posts(
         user: User = Depends(current_user),
         session: AsyncSession = Depends(get_async_session),
@@ -34,7 +35,7 @@ async def get_all_posts(
         return {"status": 500, "description": f"{e}"}
 
 
-@router.get("/all_friendly")
+@router.get("/all_friendly", status_code=200)
 async def get_all_friendly_posts(
         user: User = Depends(current_user),
         session: AsyncSession = Depends(get_async_session),
@@ -53,7 +54,7 @@ async def get_all_friendly_posts(
         return {"status": 500, "description": f"{e}"}
 
 
-@router.get("/user")
+@router.get("/user", status_code=200)
 async def get_posts_by_user(
         user: User = Depends(current_user),
         session: AsyncSession = Depends(get_async_session),
@@ -69,7 +70,7 @@ async def get_posts_by_user(
         return {"status": 500, "description": f"{e}"}
 
 
-@router.get("/user_friendly")
+@router.get("/user_friendly", status_code=200)
 async def get_friendly_posts_by_user(
         user: User = Depends(current_user),
         session: AsyncSession = Depends(get_async_session),
@@ -89,7 +90,7 @@ async def get_friendly_posts_by_user(
         return {"status": 500, "description": f"{e}"}
 
 
-@router.get("/{post_id}")
+@router.get("/{post_id}", status_code=200)
 async def get_post_by_id(
         post_id: int,
         user: User = Depends(current_user),
@@ -106,12 +107,9 @@ async def get_post_by_id(
         return {"status": 500, "description": f"{e}"}
 
 
-@router.post("/")
+@router.post("/", status_code=201)
 async def create_post(
-        title: str,
-        content: str,
-        auto_answer: bool = Query(False, description="Auto_answer"),
-        delay_answer: int = Query(30, description="Delay_answer in seconds"),
+        post_request: PostCreateRequest,
         user: User = Depends(current_user),
         session: AsyncSession = Depends(get_async_session),
 ):
@@ -120,13 +118,13 @@ async def create_post(
     """
     try:
         ai = OpenAI()
-        result = await ai.check_text(content)
+        result = await ai.check_text(post_request.content)
         await session.execute(insert(Post).values(
-            title=title,
-            content=content,
+            title=post_request.title,
+            content=post_request.content,
             user_id=user.id,
-            auto_answer=auto_answer,
-            delay_answer=delay_answer,
+            auto_answer=post_request.auto_answer,
+            delay_answer=post_request.delay_answer,
             friendly=result
         ))
         await session.commit()
@@ -137,20 +135,16 @@ async def create_post(
             "description": "Post created successfully" if result
             else "Post was created but it is not friendly, change the content"
         }
-
     except Exception as e:
         await session.rollback()
         logger.error(f"Error creating post: {e}")
         return {"status": 500, "description": f"{e}"}
 
 
-@router.patch("/{post_id}")
+@router.patch("/{post_id}", status_code=200)
 async def update_post(
         post_id: int,
-        title: str,
-        content: str,
-        auto_answer: bool = Query(False, description="Auto_answer"),
-        delay_answer: int = Query(30, description="Delay_answer in seconds"),
+        post_update: PostUpdateRequest,
         user: User = Depends(current_user),
         session: AsyncSession = Depends(get_async_session),
 ):
@@ -159,18 +153,18 @@ async def update_post(
     """
     try:
         ai = OpenAI()
-        result = await ai.check_text(content)
+        result = await ai.check_text(post_update.content)
         await session.execute(update(Post).where(Post.c.id == post_id).values(
-            title=title,
-            content=content,
-            auto_answer=auto_answer,
-            delay_answer=delay_answer,
+            title=post_update.title,
+            content=post_update.content,
+            auto_answer=post_update.auto_answer,
+            delay_answer=post_update.delay_answer,
             friendly=result
         ))
         await session.commit()
         logger.info(f"Post updated by user: {user.username}")
         return {
-            "status": 201,
+            "status": 200,
             "description": "Post changed successfully" if result
             else "Post was updated but it is not friendly, change the content"
         }
@@ -180,7 +174,7 @@ async def update_post(
         return {"status": 500, "description": f"{e}"}
 
 
-@router.delete("/{post_id}")
+@router.delete("/{post_id}", status_code=200)
 async def delete_post(
         post_id: int,
         user: User = Depends(current_user),
