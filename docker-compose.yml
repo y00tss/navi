@@ -23,8 +23,8 @@ services:
       - ./backend/src/.env
     depends_on:
       - database
-#      - redis
-#      - worker
+      - redis
+      - worker
     extra_hosts:
       - "opti.local.com:host-gateway"
 

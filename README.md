@@ -24,19 +24,19 @@
 
 1. Open you terminal and put the command:
 ```bash
-git clone None
+git clone https://github.com/y00tss/navi
 ```
 2. Open Docker Desktop on your Windows
 
 3. Back to your terminal and put the command:
 ```bash
-cd None
+cd backend/src
 ```
 4. Next step is creating the container by following command:
 ```bash
 docker-compose up --build
 ```
 5. Open your browser and put the link:
-```bash
-<a href="http://localhost:8001/docs" target="_blank">WebApp</a>
-```
+
+<a href="http://localhost:8001/docs" target="_blank">App</a>
+
