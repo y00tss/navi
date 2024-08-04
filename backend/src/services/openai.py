@@ -36,12 +36,12 @@ class OpenAI:
                 {
                     "role": "user",
                     "content": f"""
-                                    This is a post: "{content}", this is a user comment: "{comment}". 
-                                    You have to reply to the comment with a friendly message. Maximum 15 words.
-                                """  # noqa
+                                            This is a post: "{content}", this is a user comment: "{comment}". 
+                                            You have to reply as a author of the post to the comment with a friendly message. Maximum 15 words.
+                                        """  # noqa
                 },
             ],
-            max_tokens=5
+            max_tokens=120
         )
         result = response['choices'][0]['message']['content']
         return result
