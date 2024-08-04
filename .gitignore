@@ -8,4 +8,4 @@ __pycache__/
 /venv/
 backend/src/venv/
 backend/src/venv/*
-backend/src/logger/*
+backend/src/logger/*log
