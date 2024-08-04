@@ -28,7 +28,7 @@ git clone https://github.com/y00tss/navi
 ```
 2. Open Docker Desktop on your Windows
 
-3. Create an .env file: cd navi/backend/src and put the following variables from Notion page:
+3. Find .env file path: 'navi/backend/src' and put the following variables from Notion page:
 
 4. Back to your terminal and put the command:
 ```bash
