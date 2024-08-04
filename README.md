@@ -22,21 +22,31 @@
 
 ## Running the Project Locally
 
-1. Open you terminal and put the command:
+1. Open your terminal and put the command:
 ```bash
 git clone https://github.com/y00tss/navi
 ```
 2. Open Docker Desktop on your Windows
 
-3. Back to your terminal and put the command:
+3. Create an .env file: cd navi/backend/src and put the following variables from Notion page:
+
+4. Back to your terminal and put the command:
 ```bash
-cd backend/src
+cd navi
 ```
-4. Next step is creating the container by following command:
+5. Next step is creating the container and start the app by following command:
 ```bash
 docker-compose up --build
 ```
-5. Open your browser and put the link:
+6. Press the bottom below to open the app in your browser:
 
-<a href="http://localhost:8001/docs" target="_blank">App</a>
+<a href="http://localhost:8001/docs" target="_blank">WebApp</a>
+
+
+## Additional Information
+Logs path: 
+```bash
+cd backend/src/logger
+```
+Please, be sure that ports are available on your machine:
 
